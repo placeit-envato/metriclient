@@ -1,0 +1,2 @@
+web: bundle exec thin -p 9393 -R /var/www/current/config.ru start
+redis: redis-server

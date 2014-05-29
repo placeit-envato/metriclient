@@ -1,0 +1,20 @@
+<div class="span3">
+    <aside>
+        <nav>
+            <ul class="nav">
+              <li class="home">
+                <a href="/"><i class="icon-eye-open icon-white"></i> Dashboard</a>
+              </li>
+              <li class="sites-activity">
+                <a href="/sites-activity"><i class="icon-tasks icon-white"></i> Sites activity</a>
+              </li>             
+              <li class="custom-query-builder">
+                <a href="/custom-query-builder"><i class="icon-cog icon-white"></i> Query builder</a>
+              </li>
+            </ul>
+        </nav>
+    </aside>
+</div>
+<script>
+  $('.nav li.<%= current_view %>').addClass('selected');
+</script>

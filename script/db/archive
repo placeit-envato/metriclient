@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+# Archives a database.
+#
+# Usage: $ ./script/db/archive config/my_archive.yml
+#
+# Example config:
+#
+# host      : localhost
+# database  : metriclient_dev
+# username  : root
+# password  :
+# tables    :
+#   archive:  [events, errors, event_meta]
+#   clean:  [events, errors]
+
+require 'mysql2'
+require 'twitter'
+require 'colorize'
+require 'yaml'
+
+database = YAML.load_file(ARGV[0])
+
+# Connect to the DB
+client = Mysql2::Client.new(
+  :host     => database['host'],
+  :username => database['username'],
+  :password => database['password'],
+  :database => database['database']
+)
+
+puts ">> Archiving database: #{database['database']}, at: #{Time.now}".yellow
+
+row_count = 0
+
+# Iterate over the tables
+database['tables']['archive'].each do |table|
+  client.query "INSERT IGNORE INTO #{table}_archive ()SELECT * FROM #{table}"
+  puts " > Archived #{client.affected_rows} rows from #{table} table.".green
+  row_count = row_count + client.affected_rows
+end
+

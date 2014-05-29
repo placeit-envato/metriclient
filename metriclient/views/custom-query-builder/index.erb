@@ -1,0 +1,91 @@
+<script src="assets/js/metrics-classes/CustomQueryBuilder.js"></script>
+
+<script>
+  console.log('custom-query-builder');
+  $(document).ready(function(){
+    var customQueryBuilder = new CustomQueryBuilder( $('.custom-query-builder') );
+  });
+</script>
+
+<section class="custom-query-builder">
+  <header>
+    <h1>Query builder</h1>
+  </header>
+  <div class="row-fluid row-fluid-alternate-bg">
+    <div class="span12">
+        <div class="query-form">
+
+          <form class="form-inline">
+            
+            <fieldset>
+              <legend>Time</legend>
+              
+              <label>
+                <div>Date Range:</div>
+                <input type="text" class="date-range"/>
+              </label>
+
+              <label>
+                <div>Resolution:</div>
+                <input type="text" class="date-resolution" value="1"/>
+              </label>
+
+            </fieldset>
+            
+            <fieldset>
+              
+              <legend>Available data</legend>
+              
+              <label> 
+                <div>Site id:</div>
+                <input type="text" class="site-id" placeholder="Type something…">
+              </label>
+
+<!--               <label> 
+                <div>Action:</div>
+                <select>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select> 
+              </label>   -->                   
+
+              
+            </fieldset>
+            
+            <a href="javascript:void(0);" class="btn btn-inverse btn-small pull-right send-query"><i class="icon-white icon-search"></i> Search</a>
+          
+          </form>                          
+                                                              
+        </div>
+    </div>
+  </div>
+  <div class="sub-header">
+    <h2>Data</h2>
+  </div>
+  <div class="row-fluid row-fluid-alternate-bg">
+    <div class="span12">
+        <div class="data-table">
+          
+          <div class="data-grid">
+            
+            <table id="table1">
+             <thead>
+              <tr>
+               <th>Action</th>
+               <th>Count</th>
+              </tr>
+             </thead>
+             <tbody>
+
+             </tbody>
+            </table>            
+            
+          </div>
+          
+        </div>
+    </div>
+  </div>                  
+</section>

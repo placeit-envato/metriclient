@@ -1,0 +1,35 @@
+.btn-micro {
+  padding: 0 3px;
+}
+.btn-micro i {
+  margin-top: -2px;
+}
+ul.sites-stats {
+  margin: 0;
+  padding: 0;
+}
+li.single-site-stats {
+  list-style: none;
+  border: 1px solid #20282b;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+li.single-site-stats .header {
+  padding: 2px;
+  height: 24px;
+  background-color: #2f3a3f;
+}
+li.single-site-stats .header .title {
+  margin: 1px 0 0 3px;
+  color: #ffffff;
+}
+li.single-site-stats .header .title .label {
+  margin-right: 5px;
+}
+li.single-site-stats .body {
+  height: 100px;
+}
+li.single-site-stats .body .spinner {
+  padding-top: 50px;
+}

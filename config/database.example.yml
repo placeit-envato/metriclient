@@ -1,0 +1,26 @@
+default:
+  development:
+    adapter: mysql2
+    database: my_database_dev
+    username: root
+    password:
+    host: localhost
+  production:
+    adapter: mysql2
+    database: my_database
+    username: root
+    password:
+    host: localhost
+custom_subdomain:
+  development:
+    adapter: mysql2
+    database: other_database_dev
+    username: root
+    password:
+    host: localhost
+  production:
+    adapter: mysql2
+    database: other_database
+    username: root
+    password:
+    host: localhost

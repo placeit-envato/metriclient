@@ -1,0 +1,49 @@
+// colors
+@statsBorder: #20282B;
+@titleBk:     #2f3a3f;
+@titleText:   #FFF;
+
+.btn-micro{
+  padding: 0 3px;
+  i{
+    margin-top: -2px;
+  }
+}
+
+ul.sites-stats{
+  margin: 0;
+  padding: 0;
+}
+
+li.single-site-stats{
+  list-style: none;
+  border: 1px solid @statsBorder;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+
+  .header{
+    padding: 2px;
+    height: 24px;
+
+    background-color: @titleBk;
+    
+    .title{
+      margin: 1px 0 0 3px;
+      color: @titleText;
+
+      .label{
+        margin-right: 5px;
+      }
+    }
+  } //header
+
+  .body{
+    height: 100px;
+
+    .spinner{
+      padding-top: 50px;
+    }
+  }//body
+
+}//single-site-stats

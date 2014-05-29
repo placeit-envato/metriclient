@@ -1,0 +1,3 @@
+web: ruby /var/www/current/fnordmetric/fnord.rb
+pubsub: node /var/www/current/nodejsclient/client.js
+redis: redis-server

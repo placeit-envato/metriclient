@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Metriclient-client</title>
+    <!-- JS -->
+    <!-- libs -->
+    <style>
+      pre {display: inline; margin: 0}
+    </style>
+    <script>
+      <% if @error %>
+        var errorObject = <%= @error.to_pretty_hash.to_json %>
+        if (console && console.table) {
+          console.table(errorObject.meta.events);
+          console.table(errorObject.meta.network);
+          console.table(errorObject.meta.history);
+        }
+      <% end %>
+    </script>
+</head>
+<body>
+    <%= yield %>
+</body>
+</html>
+

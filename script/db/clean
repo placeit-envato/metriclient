@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+# cleans a database by removing all of its records.
+#
+# Usage: $ ./script/db/clean config/clean.yml
+#
+# Example config:
+#
+# host      : localhost
+# database  : metriclient_dev
+# username  : root
+# password  :
+# tables    :
+#   archive:  [events, errors, event_meta]
+#   clean:  [events, errors]
+
+require 'mysql2'
+require 'twitter'
+require 'date'
+require 'colorize'
+require 'yaml'
+
+database = YAML.load_file(ARGV[0])
+database['time'] = Date.new - 15
+
+# Connect to the DB
+client = Mysql2::Client.new(
+  :host     => database['host'],
+  :username => database['username'],
+  :password => database['password'],
+  :database => database['database']
+)
+
+puts ">> Will delete everything before #{database['time'].to_s}".yellow
+
+row_count = 0
+
+# Iterate over the tables
+database['tables']['clean'].each do |table|
+  client.query ( "DELETE FROM #{table} WHERE `created_at` <= \"#{database['time'].to_s}\"")
+  puts ">>> Deleted #{client.affected_rows} rows from #{table}".green
+  row_count = row_count + client.affected_rows
+end
+
+# Clear event meta.
+client.query ( "DELETE FROM `event_meta` WHERE NOT EXISTS(SELECT * FROM `events` WHERE `events`.`id` = `event_meta`.`event_id`)")
+puts ">>> Deleted #{client.affected_rows} orphan rows from event_meta".green
+row_count = row_count + client.affected_rows
+

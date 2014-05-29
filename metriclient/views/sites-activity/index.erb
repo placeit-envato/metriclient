@@ -1,0 +1,69 @@
+<script src="assets/js/metrics-classes/SingleSiteStats.js"></script>
+<script src="assets/js/metrics-classes/SitesActivityController.js"></script>
+
+<script>
+  console.log('Sites Activity');
+  $(document).ready(function(){
+    var sitesActivityController = new SitesActivityController( $('.site-activity-stats') );
+  });  
+</script>
+
+<script type="text/template" class="single-site-stats-template">
+  <li class="single-site-stats" data-siteid="{{id}}">
+    
+    <div class="header clearfix">
+        <div class="pull-left">
+            <div class="title"><!--<span class="label label-warning">Client</span><span class="label label-info">Trial remaining: 8</span>--><strong>Site Id: </strong><span class="site-id">{{id}}</span></div>
+        </div>
+        <div class="pull-right">
+            <!--<a href="javascript:void(0);" class="btn btn-info btn-small btn-micro"><i class="icon-white icon-align-left"></i> details</a>-->
+        </div>
+    </div>
+    
+    <div class="body">
+      <div class="spinner"></div>
+      <div class="activity-chart"></div>
+    </div>
+    
+  </li>
+</script>
+        
+<section class="site-activity-stats">
+  <header>
+    <h1>Sites Activity</h1>
+  </header>
+
+  <div class="row-fluid row-fluid-alternate-bg">
+    <div class="span12">
+      
+      <div class="spinner"></div>
+      
+      <div class="time-controls" style="display:none;">
+        
+        <form class="form-inline">
+          <fieldset>
+            <label>
+              <div>Time Range:</div>
+              <input type="text" class="date-range"/>
+            </label>
+
+            <label>
+              <div>Resolution:</div>
+              <input type="text" class="date-resolution" value="10"/>
+            </label>
+
+            <a href="javascript:void(0);" class="btn btn-inverse btn-small send-query"><i class="icon-white icon-search"></i> Search</a>
+
+          </fieldset>        
+                          
+        </form>
+        
+      </div>
+        
+      <ul class="sites-stats">
+        <!-- sites -->
+      </ul>
+        
+    </div>
+  </div>
+</section>
