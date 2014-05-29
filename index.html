@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Metriclient : Metriclient - Flexible event and error reporting server" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Metriclient</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/freshout-dev/metriclient">View on GitHub</a>
+
+          <h1 id="project_title">Metriclient</h1>
+          <h2 id="project_tagline">Metriclient - Flexible event and error reporting server</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/freshout-dev/metriclient/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/freshout-dev/metriclient/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="metriclient" class="anchor" href="#metriclient"><span class="octicon octicon-link"></span></a>Metriclient</h1>
+
+<p>Flexible event and error reporting server</p>
+
+<h2>
+<a name="about-metriclient" class="anchor" href="#about-metriclient"><span class="octicon octicon-link"></span></a>About metriclient</h2>
+
+<p>Metriclient is a specification for storing structured data to represent events
+and errors coming from your application. It comes bundled with a server to store
+them, and a set of scripts to help you extract information from it.</p>
+
+<p>It is designed to be an independent server that specializes on error
+recollection. It plays well with <a href="https://github.com/azendal/lithium">Lithium</a>
+and <a href="https://github.com/benbeltran/cobalt">Cobalt</a>, since they are designed for
+execution tracing and message formatting themselves, but they are not required.</p>
+
+<h2>
+<a name="events-and-errors" class="anchor" href="#events-and-errors"><span class="octicon octicon-link"></span></a>Events and errors</h2>
+
+<p>Events are the central component in metriclient. They are data records that
+contain the information you want to track.</p>
+
+<p>The structure of an event is:</p>
+
+<pre><code>id
+event_type
+created_at
+updated_at
+</code></pre>
+
+<p>Errors are no different than events, but are more specialized events that come
+with more information about the errors on your application. They are recorded in
+a different table, and have more fields that reflect the nature of an error or
+can aid in detecting and debugging, such as <code>line</code>, <code>url</code> and <code>user_agent</code></p>
+
+<p>The fields for an error are:</p>
+
+<pre><code>id
+url
+frame
+user_agent
+scoped_class_name
+meta
+created_at
+updated_at
+</code></pre>
+
+<h3>
+<a name="field-description" class="anchor" href="#field-description"><span class="octicon octicon-link"></span></a>Field description</h3>
+
+<ul>
+<li>
+<code>id</code>, <code>created_at</code>, <code>updated_at</code>: Standard sql id and timestamps</li>
+<li>
+<code>event_type</code>: Send the name of the event you are interested in (e.g.:
+            'login_button:click').</li>
+<li>
+<code>error</code>: String that holds the error message, passed from the client.</li>
+<li>
+<code>url</code>: Intended for error catching in the frontend, this holds the url where
+     the error comes from.</li>
+<li>
+<code>user_agent</code>: Also for frontend error catching, pass the user agent from where
+            the request originated.</li>
+<li>
+<code>scoped_class_name</code>: When using Lithium error catching, this indicates the
+                   Neon class where it originated.</li>
+<li>
+<code>frame</code>: Defines the scope or module in which the error generated, not
+       necessarily HTML frame but application frame.</li>
+<li>
+<code>meta</code>: This can hold arbitrary data you want to send from your application.
+      The errors table saves the meta info as text, so it works best for
+      unstructured data (suck as error stack traces). For structured data,
+      you may want to look at the <a href="#meta-table">Meta table</a>
+</li>
+</ul><h2>
+<a name="-meta-table" class="anchor" href="#-meta-table"><span class="octicon octicon-link"></span></a>
+<a name="meta-table"></a> Meta table</h2>
+
+<p>Aside from the standard event fields, you can store any arbitrary structured
+data in the <code>events_meta</code> table. The metriclient API does the extraction
+automatically if you pass an object to the <code>meta</code> attribute</p>
+
+<p>The <code>event_meta</code> table holds the following fields:</p>
+
+<ul>
+<li>
+<code>id</code>: Standard sql id</li>
+<li>
+<code>key</code>: The name of the key in the metadata</li>
+<li>
+<code>value</code>: The value associated with the key coming from the metadata</li>
+<li>
+<code>event_id</code>: Foreign key referencing the event from which this meta info comes
+          from</li>
+</ul><h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<p>The metriclient API consists of the following methods</p>
+
+<h3>
+<a name="post-apiv1events" class="anchor" href="#post-apiv1events"><span class="octicon octicon-link"></span></a><code>POST /api/v1/events</code>
+</h3>
+
+<h4>
+<a name="parameters" class="anchor" href="#parameters"><span class="octicon octicon-link"></span></a>Parameters:</h4>
+
+<p><code>event</code>: A JSON object containing all the required fields for the event. It can
+         also contain the special field <code>data</code>, to store metaadata related to
+         the event.</p>
+
+<h3>
+<a name="post-apiv1errors" class="anchor" href="#post-apiv1errors"><span class="octicon octicon-link"></span></a><code>POST /api/v1/errors</code>
+</h3>
+
+<p><code>event</code>: A JSON object containing all the required fields for the error.</p>
+
+<p>and the web view for errors</p>
+
+<h3>
+<a name="get-errorsid" class="anchor" href="#get-errorsid"><span class="octicon octicon-link"></span></a><code>GET /errors/:id</code>
+</h3>
+
+<p>Shows the json object of the record with that id</p>
+
+<h4>
+<a name="parameters-1" class="anchor" href="#parameters-1"><span class="octicon octicon-link"></span></a>Parameters:</h4>
+
+<p><code>id</code>: The id of the error record</p>
+
+<h2>
+<a name="archiving" class="anchor" href="#archiving"><span class="octicon octicon-link"></span></a>Archiving</h2>
+
+<p>The metriclient server comes bundled with scripts for archiving, since it is
+expected that you'd want to store a large number of events and errors.</p>
+
+<p>You can use the rake tasks for manually making archive backups of your database,
+or integrate them with your deploy and provisioning system for scheduling them.</p>
+
+<p>The data is archived in tables named <code>events_archive</code>, <code>events_meta_archive</code> and
+<code>errors_archive</code> with the same schema as the original tables.</p>
+
+<p>It is recommended that you use an ARCHIVE storage engine for the database since
+the archive is intended for read-only, there are no updates and inserts are on
+demand</p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<pre><code>$ ./script/db/archive config/myproject.yml
+$ ./script/db/clean   config/myproject.yml
+
+
+# Example of myproject.yml:
+# -------------------------------------------------------------------------
+# host      : localhost
+# database  : metriclient_dev
+# username  : root
+# password  :
+# tables    :
+#   archive:  [events, errors, event_meta]
+#   clean:  [events, errors]
+# -------------------------------------------------------------------------
+</code></pre>
+
+<p>You should add something similar to your provisioning engine.
+Probably in a cron or something, it is up to you to setup the right env though.</p>
+
+<p>Note: We recommend archiving every hour, and cleaning once a day.</p>
+
+<p>Note: MySQL dumps fall outside of this app's realm, you should provision that yourself!</p>
+
+<h3>
+<a name="simple-event-tracking" class="anchor" href="#simple-event-tracking"><span class="octicon octicon-link"></span></a>Simple event tracking</h3>
+
+<p>Send event info to the API, from a node.js client</p>
+
+<pre><code>var request = require("request");
+
+request({
+    uri : 'http://my.metriclient.server.com/events',
+    method: 'POST',
+    form: {
+        event: {
+            event_type: 'user:login',
+            data: {
+                userId: 10,
+                siteVersion: '1.0'
+            }
+        }
+    }
+}, function(error, response, body) {
+    console.log(body);
+});
+</code></pre>
+
+<h3>
+<a name="frontend-error-tracking" class="anchor" href="#frontend-error-tracking"><span class="octicon octicon-link"></span></a>Frontend Error tracking</h3>
+
+<p>In this example you can set up error catching and send detailed info to the
+server. The example is using Lithium, but you can use it with try/catch or
+standard onError events.</p>
+
+<pre><code>Li.Engine.error.push(function (data) {
+    var className = data.spy.targetObject.className || data.scope.constructor.className;
+    var methoName = data.spy.methodName;
+    $.post('http://my.metriclient.server.com/errors', {
+        data : {
+            event : {
+                userAgent : navigator.userAgent,
+                scopedClassName : className,
+                error : data.error.message,
+                meta : data.error.stack
+            }
+        },
+        success : { ... }
+    });
+});
+</code></pre>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>For installing, first you need to create your <code>config/database.yml</code> file, with
+your database settings. The keys should be the name of your subdomains if want
+to have multiple projects reporting to different subdomains in the same server.
+For using just one database without subdomains, you can use the <code>default</code> key.</p>
+
+<div class="highlight highlight-yaml"><pre><span class="l-Scalar-Plain">default</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mysql2</span>
+    <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">database_name</span>
+    <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">user</span>
+    <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">123abc</span>
+    <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
+  <span class="l-Scalar-Plain">production</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mysql2</span>
+    <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">metriclient</span>
+    <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">root</span>
+    <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">123abc</span>
+    <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">localhost</span>
+
+<span class="l-Scalar-Plain">other_subdomain</span><span class="p-Indicator">:</span>
+  <span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">...</span>
+  <span class="l-Scalar-Plain">production</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">...</span>
+</pre></div>
+
+<p>Then you need to create the database and run the migrations</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ RACK_ENV</span><span class="o">=</span>production rake db:create
+<span class="nv">$ RACK_ENV</span><span class="o">=</span>production rake db:migrate
+</pre></div>
+
+<p>This will set up the database. Only thing left you need is to run the server,
+using whatever web server you decide</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ RACK_ENV</span><span class="o">=</span>production unicorn_rails -c config/unicorn.rb
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Metriclient maintained by <a href="https://github.com/freshout-dev">freshout-dev</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
